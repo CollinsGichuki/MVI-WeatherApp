@@ -1,0 +1,82 @@
+name: Build and Upload Debug APK
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
+    - name: Create a Github Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with: 
+        tag_name: debug-${{ github.sha }}
+        release_name: Debug APK ${{ github.sha }}
+        draft: false
+        prerelease: true
+
+    - name: Upload Debug APK to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: app/build/outputs/apk/debug/app-debug.apk
+        asset_name: app-debug.apk
+        asset_content_type: application/vnd.android.package-archive
+
+    - name: Update README with APK link
+      uses: actions/github-script@v6
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        script: |
+          const fs = require('fs');
+          const execSync = require('child_process').execSync;
+          const readmePath = './README.md';
+
+          // Construct the download URL for the APK asset
+          const repo = process.env.GITHUB_REPOSITORY;
+          const sha = process.env.GITHUB_SHA;
+          const downloadUrl = `https://github.com/${repo}/releases/download/debug-${sha}/app-debug.apk`;
+
+          // Read the current README content
+          let readme = fs.readFileSync(readmePath, 'utf8');
+
+          const newLinkLine = `\n[Download Debug APK](${downloadUrl})\n`;
+            if (!readme.includes(downloadUrl)) {
+              readme += newLinkLine;
+              fs.writeFileSync(readmePath, readme);
+
+              // Here we append the download link. You might instead update a specific section or placeholder.
+              // Configure git user and commit the changes
+              execSync('git config user.email "action@github.com"');
+              execSync('git config user.name "GitHub Action"');
+              execSync('git add README.md');
+              execSync('git commit -m "Update README with debug APK download link"');
+              execSync('git push');
+            } else {
+              console.log("README already contains the APK download link.");
+            }
