@@ -57,8 +57,6 @@ android {
 }
 
 dependencies {
-    val hiltVersion = rootProject.extra.get("hilt_version") as String
-//    implementation(libs.androidx.material3.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,16 +75,22 @@ dependencies {
     implementation(libs.accompanist.swiperefresh)
 
     // Hilt
-    implementation (libs.hilt.android)
-    kapt (libs.google.hilt.compiler)
+    implementation ("com.google.dagger:hilt-android:2.55")
+    kapt ("com.google.dagger:hilt-compiler:2.55")
+//    implementation (libs.hilt.android)
+//    kapt (libs.google.hilt.compiler)
 
     // For instrumentation tests
-    androidTestImplementation  (libs.google.hilt.android.testing)
-    kaptAndroidTest (libs.google.hilt.compiler)
+    androidTestImplementation  ("com.google.dagger:hilt-android-testing:2.55")
+    kaptAndroidTest ("com.google.dagger:hilt-compiler:2.55")
+//    androidTestImplementation  (libs.google.hilt.android.testing)
+//    kaptAndroidTest (libs.google.hilt.compiler)
 
     // For local unit tests
-    testImplementation (libs.google.hilt.android.testing)
-    kaptTest (libs.google.hilt.compiler)
+    testImplementation ("com.google.dagger:hilt-android-testing:2.55")
+    kaptTest ("com.google.dagger:hilt-compiler:2.55")
+//    testImplementation (libs.google.hilt.android.testing)
+//    kaptTest (libs.google.hilt.compiler)
 
     // Location Services
     implementation(libs.play.services.location)
