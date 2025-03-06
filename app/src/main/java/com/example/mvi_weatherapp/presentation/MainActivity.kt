@@ -67,9 +67,6 @@ class MainActivity : ComponentActivity() {
                     state = rememberSwipeRefreshState,
                     onRefresh = {
                         viewModel.loadWeatherInfo()
-                    },
-                    indicator = { state, trigger ->
-                        // Do nothing
                     }
                 ) {
                     Box(
