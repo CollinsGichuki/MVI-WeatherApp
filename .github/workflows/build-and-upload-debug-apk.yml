@@ -34,7 +34,7 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with: 
+      with:
         tag_name: debug-${{ github.sha }}
         release_name: Debug APK ${{ github.sha }}
         draft: false
@@ -68,18 +68,28 @@ jobs:
           // Read the current README content
           let readme = fs.readFileSync(readmePath, 'utf8');
 
-          const newLinkLine = `\n[Download Debug APK](${downloadUrl})\n`;
-            if (!readme.includes(downloadUrl)) {
-              readme += newLinkLine;
-              fs.writeFileSync(readmePath, readme);
+          const newLinkLine = `[Download Debug APK](${downloadUrl})`;
+          
+          // Regex to find an existing download link line
+          const regex = /\[Download Debug APK\]\((.*?)\)/;
+          
+          // Replace the line if it exists, otherwise append the new link line
+          if(regex.test(readme)) {
+          readme = readme.replace(regex, newLinkLine);
+          } else {
+          readme += '\n${newLinkLine}\n;
+          }
+          
+          if (!readme.includes(downloadUrl)) {
+          fs.writeFileSync(readmePath, readme);
 
-              // Here we append the download link. You might instead update a specific section or placeholder.
-              // Configure git user and commit the changes
-              execSync('git config user.email "action@github.com"');
-              execSync('git config user.name "GitHub Action"');
-              execSync('git add README.md');
-              execSync('git commit -m "Update README with debug APK download link"');
-              execSync('git push');
-            } else {
-              console.log("README already contains the APK download link.");
-            }
+          // Here we append the download link. You might instead update a specific section or placeholder.
+          // Configure git user and commit the changes
+          execSync('git config user.email "action@github.com"');
+          execSync('git config user.name "GitHub Action"');
+          execSync('git add README.md');
+          execSync('git commit -m "Update README with debug APK download link"');
+          execSync('git push');
+          } else {
+           console.log("README already contains the APK download link.");
+          }
