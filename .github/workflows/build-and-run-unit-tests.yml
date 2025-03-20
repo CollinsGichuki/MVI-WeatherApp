@@ -1,12 +1,19 @@
 name: Build Debug APK and run Unit tests
 
 on:
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
-jobs:
-  build:
+permissions:
+  contents: write
+  actions: read
+  checks: write
 
+jobs:
+  build-tests:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
@@ -38,20 +45,10 @@ jobs:
         name: test-results
         path: build/test-results
 
-    - name: Comment on Pr with Failing Test Details
-      if: fialure() && github.event_name == 'pull_request'
-      uses: actions/github-script@v6
+    - name: Test Report
+      uses: dorny/test-reporter@v2
+      if: success() || failure()
       with:
-        script: |
-        const fs = require('fs');
-        const path = 'build/test-results/test/TEST-com.example.mvi_weatherapp.ExampleUnitTest.xml';
-        if (fs.existsSync(path)) {
-              const xmlContent = fs.readFileSync(path, 'utf8');
-              commentBody = `### Failing Test Report\n\n\`\`\`\n${xmlContent}\n\`\`\``;
-            }
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody
-            });
+        name: Jest Tests
+        path: build/test-results/test-results.xml
+        reporter: jest-junit
