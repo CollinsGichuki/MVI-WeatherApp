@@ -1,6 +1,5 @@
 package com.example.mvi_weatherapp.presentation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,8 +22,6 @@ class WeatherViewModel @Inject constructor(
         private set
 
     fun loadWeatherInfo() {
-        Log.d("Trackking", "loading weatherInfo.")
-
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,
@@ -32,12 +29,9 @@ class WeatherViewModel @Inject constructor(
             )
 
             locationTracker.getCurrentLocation()?.let { location ->
-                Log.d("Trackking", "current location: $location")
-
                 when (val result =
                     repository.getWeatherData(location.latitude, location.longitude)) {
                     is Resource.Success -> {
-                        Log.d("Trackking", "resource successful. Result: $result")
                         state = state.copy(
                             isLoading = false,
                             weatherInfo = result.data,
@@ -46,7 +40,6 @@ class WeatherViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d("Trackking", "resource error: Error: ${result.message}")
                         state = state.copy(
                             isLoading = false,
                             weatherInfo = null,
@@ -55,7 +48,6 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: kotlin.run {
-                Log.d("Trackking", "location permission not found")
                 state = state.copy(
                     isLoading = false,
                     isError = "Couldn't retrieve location. Make sure you've granted the location permission and enabled GPS"
