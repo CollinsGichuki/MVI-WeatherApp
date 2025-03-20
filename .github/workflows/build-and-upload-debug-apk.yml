@@ -77,7 +77,7 @@ jobs:
           if(regex.test(readme)) {
           readme = readme.replace(regex, newLinkLine);
           } else {
-          readme += '\n${newLinkLine}\n;
+          readme += `\n${newLinkLine}\n`;
           }
           
           if (!readme.includes(downloadUrl)) {
