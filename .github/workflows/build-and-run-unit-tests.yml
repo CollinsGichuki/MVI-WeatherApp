@@ -43,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with: 
         name: lint_results
-        path: app/build/reports/lint-results.xml
+        path: app/build/reports/lint-results-debug.html
 
     - name: Run Unit tests
       id: run_tests
