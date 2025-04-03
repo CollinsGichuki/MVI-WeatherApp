@@ -10,8 +10,6 @@ jobs:
   build-tests:
     name: Build and Test
     runs-on: ubuntu-latest
-    env:
-      LINT_REPORT_URL: "https://${{ github.repository_owner }}.github.io/${{ steps.repo_name.outputs.repo_name }}/lint-report/index.html"
 
     steps:
       - name: Checkout Code
