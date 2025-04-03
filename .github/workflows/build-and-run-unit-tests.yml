@@ -55,8 +55,8 @@ jobs:
       - name: Prepare Lint Report for Github Pages
         if: always()
         run: |
-          mkdir -p lint-report
-            cp app/build/reports/lint-results-debug.html pages/lint-report/index.html
+          mkdir -p pages/lint-report
+          cp app/build/reports/lint-results-debug.html pages/lint-report/index.html
 
       - name: Deploy Lint Report to Github Pages
         if: always()
