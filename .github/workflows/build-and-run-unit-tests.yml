@@ -99,8 +99,12 @@ jobs:
 
             // Retrieve the lint report URL from the environment.
             const lintReportUrl = process.env.LINT_REPORT_URL;
-
+            
+            const marker = '<!-- LINT-COMMENT -->';
+            
             const commentBody = `
+            ${marker}
+  
             - **Errors:** ${errorsCount}
             - **Warnings:** ${warningsCount}
 
