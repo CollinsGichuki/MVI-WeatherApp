@@ -8,7 +8,7 @@ permissions:
   contents: write
   actions: read
   checks: write
-  issues: read
+  issues: write
 
 jobs:
   build-tests:
