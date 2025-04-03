@@ -4,11 +4,7 @@ on:
   pull_request:
     branches: [ "master" ]
 
-permissions:
-  contents: write
-  actions: read
-  checks: write
-  issues: write
+permissions: write-all
 
 jobs:
   build-tests:
