@@ -1,8 +1,6 @@
 name: Build Debug APK and run Unit tests
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -43,7 +41,25 @@ jobs:
       uses: actions/upload-artifact@v4
       with: 
         name: lint_results
-        path: app/build/reports/lint-results-debug.html
+        path: app/build/reports/lint-results-debug.xml
+
+    - name: Comment Lint Results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'app/build/reports/lint-results-debug.xml'
+          let lintResults = 'No lint results found.'
+          if (fs.existsSync(path)) {
+            lintResults = fs.readFileSync(path, {encoding:'utf8'});
+          }
+          github.rest.issues.createComment({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          issue_number: context.issue.number,
+          body: `### Lint Results\n\n\`\`\`xml\n${lintContent}\n\`\`\``
+          })
 
     - name: Run Unit tests
       id: run_tests
