@@ -80,8 +80,8 @@ jobs:
             lintResults = fs.readFileSync(path, {encoding:'utf8'});
           }
           
-          const errorMatches = lintContent.match(/<error/g) || [];
-          const warningMatches = lintContent.match(/<warning/g) || [];
+          const errorMatches = lintResults.match(/<error/g) || [];
+          const warningMatches = lintResults.match(/<warning/g) || [];
           const errorsCount = errorMatches.length;
           const warningsCount = warningMatches.length;
           
