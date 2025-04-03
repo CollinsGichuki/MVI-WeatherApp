@@ -11,7 +11,7 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      LINT_REPORT_URL: "https://${{ github.repository_owner }}.github.io/${{ github.repository }}/lint-report/index.html"
+      LINT_REPORT_URL: "https://${{ github.repository_owner }}.github.io/${{ github.repository.split('/')[1] }}/lint-report/index.html"
 
     steps:
     - name: Checkout Code
@@ -27,8 +27,8 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-#    - name: Build with Gradle
-#      run: ./gradlew build
+    - name: Build with Gradle
+      run: ./gradlew build
 
     - name: Run Unit tests
       id: run_tests
@@ -86,7 +86,7 @@ jobs:
           const warningsCount = warningMatches.length;
           
           // Retrieve the lint report URL from the environment.
-          const lintReportUrl = process.env.LINT_REPORT_URL || 'https://example.com/full-lint-report';
+          const lintReportUrl = process.env.LINT_REPORT_URL;
           
           const commentBody = `
           - **Errors:** ${errorsCount}
